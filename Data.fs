@@ -22,16 +22,16 @@ module Data =
     let GetIncompleteTasks () = 
         query { for data in ctx.``[MAIN].[TASKS]`` do 
                     where (data.COMPLETE = 0L)
-                    select {Id = data.T1KEY; Description = data.TASK; Complete = false}}
+                    select {Id = data.ID; Description = data.DESCRIPTION; Complete = false}}
                 |> Seq.toList
 
     let private findTask id =
         ctx.``[MAIN].[TASKS]``
-        |> Seq.find (fun t -> t.T1KEY = id)
+        |> Seq.find (fun t -> t.ID = id)
 
     let AddTask description = 
         let newTask = ctx.``[MAIN].[TASKS]``.Create()
-        newTask.TASK <- description
+        newTask.DESCRIPTION <- description
         newTask.COMPLETE <- 0L
         ctx.SubmitUpdates()
 
@@ -43,5 +43,5 @@ module Data =
     let UpdateTask id description complete = 
         let task = findTask id
         task.COMPLETE <- if complete then 1L else 0L
-        task.TASK <- description
+        task.DESCRIPTION <- description
         ctx.SubmitUpdates()
